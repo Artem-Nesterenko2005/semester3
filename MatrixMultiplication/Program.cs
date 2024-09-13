@@ -35,8 +35,8 @@ namespace MatrixMultiplication
 
             Matrix firstMatrix = new(firstPath);
             Matrix secondMatrix = new(secondPath);
-            var result = firstMatrix.MultiThreadMultiplicateMatrix(secondMatrix);
-            result.WriteMatrixFile(resultPath);
+            Matrix result = firstMatrix.MultiThreadMultiplicateMatrix(secondMatrix);
+            result.WriteMatrixFile(resultPath!);
         }
     }
 }
