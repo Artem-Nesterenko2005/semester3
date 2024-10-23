@@ -90,6 +90,7 @@ namespace SimpleFTP
             }
 
             var fileSystemEntries = Directory.GetFileSystemEntries(path);
+            Array.Sort(fileSystemEntries);
             var size = fileSystemEntries.Length;
 
             await writer.WriteAsync($"{size}");
