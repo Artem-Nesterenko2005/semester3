@@ -37,12 +37,11 @@ namespace TestSimpleFTP
             this.client = new(this.endPoint);
             this.server = new(this.endPoint.Port);
 
-            this.directoryPath = "1 ../../../testFiles";
-            this.filePath = "2 ../../../testFiles/file1.txt";
+            this.directoryPath = "1 ../../../testFiles/directory";
+            this.filePath = "2 ../../../testFiles/directory/file1.txt";
             this.server.Start();
 
-            this.rightResultDirectory = "3 ../../../testFiles/directory True " +
-                "../../../testFiles/file1.txt False ../../../testFiles/file2.txt False\n";
+            this.rightResultDirectory = "2 ../../../testFiles/directory/file1.txt False ../../../testFiles/directory/file2.txt False\n";
 
             this.rightResultFile = "3 123\n";
         }
