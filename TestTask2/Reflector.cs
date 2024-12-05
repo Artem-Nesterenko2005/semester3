@@ -67,29 +67,29 @@ public class Reflector
         var firstElements = first.Select(info => info.Name + info.CustomAttributes);
         var secondElements = second.Select(info => info.Name + info.CustomAttributes);
 
-        var onlyInA = firstElements.Except(secondElements);
-        var onlyInB = secondElements.Except(firstElements);
+        var onlyInFirst = firstElements.Except(secondElements);
+        var onlyInSecond = secondElements.Except(firstElements);
 
-        if (onlyInA.Any() || onlyInB.Any())
+        if (onlyInFirst.Any() || onlyInSecond.Any())
         {
-            if (onlyInA.Any())
+            if (onlyInFirst.Any())
             {
                 Console.WriteLine(first[0].DeclaringType?.Name + ":");
             }
 
-            foreach (var member in onlyInA)
+            foreach (var member in onlyInFirst)
             {
                 Console.WriteLine(member);
             }
 
             Console.WriteLine();
 
-            if (onlyInB.Any())
+            if (onlyInSecond.Any())
             {
                 Console.WriteLine(second[0].DeclaringType?.Name + ":");
             }
 
-            foreach (var member in onlyInB)
+            foreach (var member in onlyInSecond)
             {
                 Console.WriteLine(member);
             }
