@@ -1,66 +1,68 @@
+// <copyright file="TestLazy.cs" company="Artem-Nesterenko2005">
+// Copyright (c) Artem-Nesterenko2005. All Rights Reserved.
+// </copyright>
+// <license>
+// Licensed under the MIT License. See LICENSE in the repository root for license information.
+// </license>
+
+namespace TestLazy;
 using Lazy;
 
-// MIT License
-// Copyright (c) 2024 Artem-Nesterenko2005
-// All rights reserved
-
-namespace TestLazy
+public class Tests
 {
-    public class Tests
+    [Test]
+    public void TestLazyCalculateFunction()
     {
-        [Test]
-        public void TestLazyCalculateFunction()
+        int Function() => 1 + 1;
+        SinglethreadLazy<int> singleLazy = new (Function);
+        MultithreadLazy<int> multiLazy = new (Function);
+        Assert.That(singleLazy.Get(), Is.EqualTo(2));
+        Assert.That(multiLazy.Get(), Is.EqualTo(2));
+    }
+
+    [Test]
+    public void TestIsCalculated()
+    {
+        int Function() => 1 + 1;
+        SinglethreadLazy<int> singleLazy = new (Function);
+        MultithreadLazy<int> multiLazy = new (Function);
+        singleLazy.Get();
+        multiLazy.Get();
+        Assert.IsTrue(singleLazy.IsCalculated());
+        Assert.IsTrue(singleLazy.IsCalculated());
+    }
+
+    [Test]
+    public void TestMultithread()
+    {
+        int Function() => 2 * 2;
+        MultithreadLazy<int> multiLazy = new (Function);
+        var threadsArray = new Thread[Environment.ProcessorCount];
+        List<int> list = new ();
+        for (int i = 0; i < threadsArray.Length; ++i)
         {
-            int Function() => 1 + 1;
-            SinglethreadLazy<int> singleLazy = new (Function);
-            MultithreadLazy<int> multiLazy = new (Function);
-            Assert.That(singleLazy.Get(), Is.EqualTo(2));
-            Assert.That(multiLazy.Get(), Is.EqualTo(2));
+            int localI = i;
+            threadsArray[localI] = new Thread(() =>
+            {
+                list.Add(multiLazy.Get());
+            });
         }
 
-        [Test]
-        public void TestIsCalculated()
+        foreach (var thread in threadsArray)
         {
-            int Function() => 1 + 1;
-            SinglethreadLazy<int> singleLazy = new (Function);
-            MultithreadLazy<int> multiLazy = new (Function);
-            singleLazy.Get();
-            multiLazy.Get();
-            Assert.IsTrue(singleLazy.IsCalculated() && singleLazy.IsCalculated());
+            thread.Start();
         }
 
-        [Test]
-        public void TestMultithread()
+        foreach (var thread in threadsArray)
         {
-            int Function() => 2 * 2;
-            MultithreadLazy<int> multiLazy = new (Function);
-            var threadsArray = new Thread[Environment.ProcessorCount];
-            List<int> list = new ();
-            for (int i = 0; i < threadsArray.Length; ++i)
-            {
-                int localI = i;
-                threadsArray[localI] = new Thread(() =>
-                {
-                    list.Add(multiLazy.Get());
-                });
-            }
+            thread.Join();
+        }
 
-            foreach (var thread in threadsArray)
+        foreach (var symbol in list)
+        {
+            if (symbol != 4)
             {
-                thread.Start();
-            }
-
-            foreach (var thread in threadsArray)
-            {
-                thread.Join();
-            }
-
-            foreach (var symbol in list)
-            {
-                if (symbol != 4)
-                {
-                    Assert.Fail();
-                }
+                Assert.Fail();
             }
         }
     }
